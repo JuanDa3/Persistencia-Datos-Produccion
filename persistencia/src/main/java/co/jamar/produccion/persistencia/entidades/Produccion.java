@@ -14,7 +14,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class Produccion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -34,7 +33,7 @@ public class Produccion {
     private int totalMezcla;
 
     @Column(nullable = false)
-    private int productividad;
+    private double productividad;
 
     @Column(name = "sobrante_mezcla")
     private int sobranteMezcla;
@@ -50,14 +49,13 @@ public class Produccion {
     private List<Prueba> pruebas;
 
     @OneToMany(mappedBy = "produccion")
-    private List<PruebaSuperficial> pruebasSuperficiales;
+    private List<ProductoNoConforme> listaProductosNoConformes;
 
     @OneToMany(mappedBy = "produccion")
     private List<TrasladoMezcla> trasladosMezcla;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "material_producto_id", nullable = false)
-    private MaterialProducto materialProducto;
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MaterialProducto> materiales;
 
     @OneToMany(mappedBy = "produccion")
     private List<RecursoHumanoProduccion> recursosHumanosProduccion;

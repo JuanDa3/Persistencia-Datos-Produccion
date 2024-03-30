@@ -3,6 +3,7 @@ package co.jamar.produccion.persistencia.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class Producto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,15 +28,22 @@ public class Producto {
     @Column(length = 45)
     private String complemento;
 
+    @Column(length = 45)
+    private String referenciaP1;
+
     @Column(length = 45,nullable = false)
-    private String tipo;
+    private String linea;
 
     @Column(nullable = false)
     private int peso;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "criterio_aceptacion_id", nullable = false)
-    private CriterioAceptacion criterioAceptacion;
+    @ManyToMany
+    @JoinTable(
+            name = "producto_criterio",
+            joinColumns = @JoinColumn(name = "producto_id"),
+            inverseJoinColumns = @JoinColumn(name = "criterio_id")
+    )
+    private List<CriterioAceptacion> criterios = new ArrayList<>();
 
     @OneToMany(mappedBy = "producto")
     private List<Bitacora> bitacoras;

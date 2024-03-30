@@ -12,7 +12,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class Maquina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

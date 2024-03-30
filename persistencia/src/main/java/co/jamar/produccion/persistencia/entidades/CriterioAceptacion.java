@@ -3,6 +3,7 @@ package co.jamar.produccion.persistencia.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Entity
@@ -12,7 +13,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class CriterioAceptacion {
 
     @Id
@@ -26,7 +26,6 @@ public class CriterioAceptacion {
     @Column(nullable = false)
     private int valor;
 
-    @OneToMany(mappedBy = "criterioAceptacion")
-    private List<Producto> productos;
-
+    @ManyToMany(mappedBy = "criterios")
+    private List<Producto> productos = new ArrayList<>();
 }

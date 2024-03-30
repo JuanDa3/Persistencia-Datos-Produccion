@@ -10,7 +10,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class RecursoHumanoProduccion {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

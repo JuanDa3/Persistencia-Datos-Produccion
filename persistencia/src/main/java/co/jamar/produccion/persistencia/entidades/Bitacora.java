@@ -40,8 +40,6 @@ public class Bitacora {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
-    @Column(length = 45,nullable = false)
-    private String linea;
 
 
 

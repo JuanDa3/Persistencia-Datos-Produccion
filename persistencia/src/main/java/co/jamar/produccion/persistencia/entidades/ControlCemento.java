@@ -12,7 +12,6 @@ import java.util.Date;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class ControlCemento {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

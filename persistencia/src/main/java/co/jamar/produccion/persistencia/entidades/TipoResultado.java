@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class TipoResultado {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,5 +26,5 @@ public class TipoResultado {
     private List<Prueba> pruebas;
 
     @OneToMany(mappedBy = "tipoResultado")
-    private List<PruebaSuperficial> pruebasSuperficiales;
+    private List<ProductoNoConforme> pruebasSuperficiales;
 }

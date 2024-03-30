@@ -13,7 +13,6 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class Proveedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

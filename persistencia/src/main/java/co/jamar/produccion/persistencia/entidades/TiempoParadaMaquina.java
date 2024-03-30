@@ -11,7 +11,6 @@ import lombok.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(schema = "spring")
 public class TiempoParadaMaquina {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

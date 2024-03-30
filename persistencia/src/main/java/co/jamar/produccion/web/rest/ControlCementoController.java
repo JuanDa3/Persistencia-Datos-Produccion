@@ -2,6 +2,7 @@ package co.jamar.produccion.web.rest;
 
 import co.jamar.produccion.negocio.servicios.ControlCementoServicio;
 import co.jamar.produccion.web.dto.Mensaje;
+import co.jamar.produccion.web.dto.SaldoCementoDTO;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -22,9 +23,12 @@ public class ControlCementoController {
     @GetMapping("/saldo")
     public ResponseEntity<?>obtenerSaldoCemento(){
         try {
-            return ResponseEntity.status(200).body(controlCementoServicio.saldoCemento());
+            int saldo = controlCementoServicio.saldoCemento();
+            SaldoCementoDTO saldoCementoDTO = new SaldoCementoDTO();
+            saldoCementoDTO.setSaldo(saldo);
+            return ResponseEntity.ok(saldoCementoDTO);
         }catch (Exception e){
-            return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
+            return ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
         }
     }
 }
