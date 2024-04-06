@@ -3,6 +3,7 @@ package co.jamar.produccion.persistencia.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
@@ -26,7 +27,10 @@ public class Bitacora {
     private int consecutivo;
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha;
+
+    @Column(nullable = false)
+    private boolean esPrincipal;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "maquina_id", nullable = false)
