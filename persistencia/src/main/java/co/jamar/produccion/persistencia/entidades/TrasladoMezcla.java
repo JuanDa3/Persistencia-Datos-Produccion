@@ -3,7 +3,7 @@ package co.jamar.produccion.persistencia.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.Date;
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -29,7 +29,7 @@ public class TrasladoMezcla {
     private int cantidad;
 
     @Column(nullable = false)
-    private Date fecha;
+    private LocalDate fecha;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produccion_id", nullable = false)

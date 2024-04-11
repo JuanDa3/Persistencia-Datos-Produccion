@@ -16,18 +16,14 @@ public class ProductoNoConforme {
     @EqualsAndHashCode.Include
     private Integer idProductoNoConforme;
 
-    @Column(length = 45, nullable = false)
-    private String cantidad;
+    @Column(nullable = false)
+    private int cantidad;
 
     @Column(length = 45, nullable = false)
     private String tipo;
 
     @Column(length = 45, nullable = false)
     private String causa;
-
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tipo_resultado_id", nullable = false)
-    private TipoResultado tipoResultado;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produccion_id", nullable = false)

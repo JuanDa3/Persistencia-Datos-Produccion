@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class MateriaPrimaProveedor {
 
     @Id
@@ -27,15 +28,6 @@ public class MateriaPrimaProveedor {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "proveedor_id", nullable = false)
     private Proveedor proveedor;
-
-    @Column(nullable = false)
-    private Date fechaConsignacion;
-
-    @Column(length = 45, nullable = false)
-    private String cantidad;
-
-    @Column(length = 45, nullable = false)
-    private String lote;
 
     @OneToMany(mappedBy = "materiaPrimaProveedor")
     private List<MaterialProducto> materialProductos;

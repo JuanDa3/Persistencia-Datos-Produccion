@@ -30,10 +30,6 @@ public class Prueba {
     private Empleado empleado;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "tipo_resultado_id", nullable = false)
-    private TipoResultado tipoResultado;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produccion_id", nullable = false)
     private Produccion produccion;
 

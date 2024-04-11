@@ -15,17 +15,12 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class MaterialProducto {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
     private Integer idMaterialProducto;
-
-    @Column(nullable = false)
-    private LocalDateTime fecha;
-
-    @Column(length = 45, nullable = false)
-    private String cantidad;
 
     @ManyToOne
     @JoinColumn(name = "produccion_id")

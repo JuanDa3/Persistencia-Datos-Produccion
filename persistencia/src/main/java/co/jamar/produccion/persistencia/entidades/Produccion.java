@@ -54,7 +54,7 @@ public class Produccion {
     @OneToMany(mappedBy = "produccion")
     private List<TrasladoMezcla> trasladosMezcla;
 
-    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "produccion")
     private List<MaterialProducto> materiales;
 
     @OneToMany(mappedBy = "produccion")
@@ -63,4 +63,9 @@ public class Produccion {
     @OneToMany(mappedBy = "produccion")
     private List<ControlCemento> listaControlCemento;
 
+    @OneToMany(mappedBy = "produccion")
+    private List<RegistroContable>listaRegistros;
+
+    @OneToMany(mappedBy = "produccion")
+    private List<LecturaContadorAgua> lecturasContadorAgua;
 }

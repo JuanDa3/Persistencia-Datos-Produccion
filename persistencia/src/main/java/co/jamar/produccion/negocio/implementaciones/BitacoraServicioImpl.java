@@ -34,11 +34,6 @@ public class BitacoraServicioImpl implements BitacoraServicio {
     }
 
     @Override
-    public void existeBitacoraPrincipalFecha(LocalDate fecha) {
-        bitacoraRepo.existsEsPrincipalEnUltimaFecha(fecha);
-    }
-
-    @Override
     public void guardarBitacota(BitacoraRequestDTO bitacoraRequestDTO) throws Exception {
         boolean esBitacoraPrincipal = bitacoraRepo.existsEsPrincipalEnUltimaFecha(bitacoraRequestDTO.getFecha());
 

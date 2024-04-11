@@ -3,28 +3,30 @@ package co.jamar.produccion.persistencia.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
-import java.util.List;
-
 @Entity
 @Getter
 @Setter
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
+@ToString
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@ToString
-public class MateriaPrima {
+@Table(schema = "produccion_jamar")
+public class LecturaContadorAgua {
+
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @EqualsAndHashCode.Include
-    private Integer idMateriaPrima;
-
-    @Column(length = 45, nullable = false)
-    private String nombre;
+    private Integer idLectura;
 
     @Column(nullable = false)
-    private int cantidad;
+    private int lecturaInicial;
 
-    @OneToMany(mappedBy = "materiaPrima")
-    private List<MateriaPrimaProveedor> proveedores;
+    @Column(nullable = false)
+    private int lecturaFinal;
+
+    @ManyToOne
+    @JoinColumn(name = "produccion_id")
+    private Produccion produccion;
 }

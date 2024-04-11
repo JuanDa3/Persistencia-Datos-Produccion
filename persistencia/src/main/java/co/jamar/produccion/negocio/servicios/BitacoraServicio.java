@@ -7,7 +7,5 @@ import java.util.Date;
 
 public interface BitacoraServicio {
 
-    void existeBitacoraPrincipalFecha(LocalDate fecha);
-
     void guardarBitacota(BitacoraRequestDTO bitacoraRequestDTO) throws Exception;
 }

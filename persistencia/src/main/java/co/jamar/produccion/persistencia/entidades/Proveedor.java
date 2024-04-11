@@ -13,6 +13,7 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+@ToString
 public class Proveedor {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -23,13 +24,11 @@ public class Proveedor {
     private String nombreProveedor;
 
     @Column(name = "nombre_materia_prima", length = 45, nullable = false)
-    private String nombreMateriaPrima;
+    private String producto;
 
     @Column(length = 45, nullable = false)
     private String lote;
 
     @OneToMany(mappedBy = "proveedor")
     private List<MateriaPrimaProveedor> materiasPrimas;
-
-
 }
