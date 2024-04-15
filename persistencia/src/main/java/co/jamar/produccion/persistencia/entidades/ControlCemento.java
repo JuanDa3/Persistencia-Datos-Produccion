@@ -3,6 +3,7 @@ package co.jamar.produccion.persistencia.entidades;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
 import java.util.Date;
 
 @Entity
@@ -19,21 +20,21 @@ public class ControlCemento {
     private Integer idControlCemento;
 
     @Column(nullable = false)
-    private int saldo;
+    private double saldo;
 
     @Column(nullable = true)
-    private int entradaKilos;
+    private double entradaKilos;
 
     @Column(nullable = true)
-    private int salidaKilos;
-
-    @Column(nullable = true)
-    @Temporal(TemporalType.DATE)
-    private Date fechaEntrada;
+    private double salidaKilos;
 
     @Column(nullable = true)
     @Temporal(TemporalType.DATE)
-    private Date fechaSalida;
+    private LocalDate fechaEntrada;
+
+    @Column(nullable = true)
+    @Temporal(TemporalType.DATE)
+    private LocalDate fechaSalida;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produccion_id", nullable = false)

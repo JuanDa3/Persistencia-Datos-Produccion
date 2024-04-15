@@ -7,6 +7,6 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface ControlCementoRepo extends JpaRepository<ControlCemento, Integer> {
-    @Query("select c.saldo from ControlCemento c order by fechaEntrada desc LIMIT 1")
+    @Query("select c.saldo from ControlCemento c order by c.fechaSalida desc LIMIT 1")
     Integer findLatestSaldo();
 }

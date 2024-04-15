@@ -1,12 +1,11 @@
 package co.jamar.produccion.web.rest;
 
 import co.jamar.produccion.negocio.servicios.ControlCementoServicio;
+import co.jamar.produccion.web.dto.ControlCementoRequestDTO;
 import co.jamar.produccion.web.dto.Mensaje;
 import co.jamar.produccion.web.dto.SaldoCementoDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping("api/produccion/control-cemento")
@@ -29,6 +28,16 @@ public class ControlCementoController {
             return ResponseEntity.ok(saldoCementoDTO);
         }catch (Exception e){
             return ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
+        }
+    }
+
+    @PostMapping
+    public ResponseEntity<?>guardarControlCemento(@RequestBody ControlCementoRequestDTO controlCementoRequestDTO){
+        try {
+            controlCementoServicio.guardarControlCemento(controlCementoRequestDTO);
+            return  ResponseEntity.status(201).body(new Mensaje("El Control Cemento se registró correctamente"));
+        }catch (Exception e){
+            return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
         }
     }
 }

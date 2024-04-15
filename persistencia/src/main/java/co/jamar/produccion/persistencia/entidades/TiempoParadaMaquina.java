@@ -17,11 +17,11 @@ public class TiempoParadaMaquina {
     @EqualsAndHashCode.Include
     private Integer idTiempoParadaMaquina;
 
-    @Column(length = 45, nullable = false)
+    @Column(length = 2, nullable = false)
     private String tipo;
 
-    @Column(length = 45, nullable = false)
-    private String minutos;
+    @Column(nullable = false)
+    private int minutos;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "produccion_id", nullable = false)
