@@ -51,8 +51,15 @@ public class BitacoraServicioImpl implements BitacoraServicio {
         bitacora.setEmpleado(empleado);
         bitacora.setProducto(producto);
 
-
         bitacoraRepo.save(bitacora);
+    }
+
+    @Override
+    public void validarExisteBitacora(int numeroBitacora) throws Exception {
+        Optional<Bitacora> existeBitacora = bitacoraRepo.obtenerBitacoraPorConsecutivo(numeroBitacora);
+        if(existeBitacora.isPresent()){
+            throw new Exception("Bitacora ya existe");
+        }
     }
 
     private Maquina obtenerMaquina(String nombreMaquina) throws Exception {

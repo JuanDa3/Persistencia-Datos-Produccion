@@ -8,4 +8,5 @@ import java.util.Date;
 public interface BitacoraServicio {
 
     void guardarBitacota(BitacoraRequestDTO bitacoraRequestDTO) throws Exception;
+    void validarExisteBitacora(int numeroBitacora) throws Exception;
 }

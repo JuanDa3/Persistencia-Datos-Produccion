@@ -21,9 +21,11 @@ public class RegistroContableServicioImpl implements RegistroContableServicio {
     }
 
     @Override
-    public void guardarRegistroContable(RegistroContableRequestDTO registroContableRequestDTO) {
+    public void guardarRegistroContable(RegistroContableRequestDTO registroContableRequestDTO) throws Exception {
         Produccion produccion = produccionRepo.obtenerProduccionPorConsecutivoBitacora(registroContableRequestDTO.getConsecutivoBitacora());
-
+        if(produccion == null){
+            throw new Exception("No se encuentran datos de la produccion asociada a la bitacora");
+        }
         RegistroContable registroContable = new RegistroContable();
 
         registroContable.setNumero(registroContableRequestDTO.getNumero());

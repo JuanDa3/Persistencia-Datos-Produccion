@@ -25,4 +25,15 @@ public class BitacoraController {
             return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
         }
     }
+
+    @GetMapping
+    public ResponseEntity<?>validarExisteBitacora(@RequestParam("numeroBitacora") int numeroBitacora){
+        try {
+            bitacoraServicio.validarExisteBitacora(numeroBitacora);
+            return  ResponseEntity.status(200).body(new Mensaje("La Bitacora no existe en el sistema"));
+        } catch (Exception e) {
+            return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
+        }
+    }
+
 }
