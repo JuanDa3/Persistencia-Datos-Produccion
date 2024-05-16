@@ -42,30 +42,30 @@ public class Produccion {
     @JoinColumn(name = "id_bitacora")
     private Bitacora bitacora;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<TiempoParadaMaquina> tiemposParadaMaquina;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<Prueba> pruebas;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<ProductoNoConforme> listaProductosNoConformes;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<TrasladoMezcla> trasladosMezcla;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<MaterialProducto> materiales;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<RecursoHumanoProduccion> recursosHumanosProduccion;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<ControlCemento> listaControlCemento;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<RegistroContable>listaRegistros;
 
-    @OneToMany(mappedBy = "produccion")
+    @OneToMany(mappedBy = "produccion", cascade = CascadeType.ALL)
     private List<LecturaContadorAgua> lecturasContadorAgua;
 }

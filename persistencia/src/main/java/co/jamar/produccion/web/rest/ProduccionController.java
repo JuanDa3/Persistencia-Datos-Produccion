@@ -4,10 +4,7 @@ import co.jamar.produccion.negocio.servicios.ProduccionServicio;
 import co.jamar.produccion.web.dto.Mensaje;
 import co.jamar.produccion.web.dto.ProduccionRequestDTO;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 
@@ -27,6 +24,16 @@ public class ProduccionController {
             return  ResponseEntity.status(201).body( estadisticasProduccion);
         } catch (Exception e) {
             return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
+        }
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?>eliminarProduccion(@PathVariable int id){
+        try {
+            produccionServicio.eliminarProduccion(id);
+            return ResponseEntity.ok().body("Producción eliminada correctamente");
+        } catch (Exception e) {
+            return ResponseEntity.status(500).body("Error al eliminar la producción: " + e.getMessage());
         }
     }
 }

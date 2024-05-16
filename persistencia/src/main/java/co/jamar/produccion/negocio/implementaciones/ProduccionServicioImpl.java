@@ -30,6 +30,8 @@ public class ProduccionServicioImpl implements ProduccionServicio {
 
     private final MaterialProductoRepo materialProductoRepo;
 
+    private final HashMap<String, Double> estadisticas = new HashMap<>();
+
     public ProduccionServicioImpl(ProduccionRepo produccionRepo, BitacoraRepo bitacoraRepo, ProveedorRepo proveedorRepo, MateriaPrimaRepo materiaPrimaRepo, MateriaPrimaProveedorRepo materiaPrimaProveedorRepo, MaterialProductoRepo materialProductoRepo) {
         this.produccionRepo = produccionRepo;
         this.bitacoraRepo = bitacoraRepo;
@@ -43,13 +45,20 @@ public class ProduccionServicioImpl implements ProduccionServicio {
     @Override
     public HashMap<String, Double> guardarProduccion(ProduccionRequestDTO produccionRequestDTO) throws Exception {
         Bitacora bitacora = obtenerBitacoraPorConsecutivo(produccionRequestDTO.getNumBitacora());
-        double productividad = calcularProductividad(produccionRequestDTO.getHoraInicio(), produccionRequestDTO.getHoraFin());
+        double productividad = calcularProductividad(produccionRequestDTO.getHoraInicio(), produccionRequestDTO.getHoraFin(), produccionRequestDTO.getCantidadProductos());
 
         Produccion produccion = getProduccion(produccionRequestDTO, bitacora, productividad);
 
         Produccion produccionGuardada = produccionRepo.save(produccion);
 
         return asociarDatosProduccion(produccionGuardada, produccionRequestDTO.getListaDeMateriasPrimas(), produccionRequestDTO);
+    }
+
+    @Override
+    public void eliminarProduccion(int id) {
+        Produccion produccionEliminar = produccionRepo.getReferenceById(id);
+        System.out.println(produccionEliminar.getIdProduccion());
+        produccionRepo.delete(produccionEliminar);
     }
 
     private static Produccion getProduccion(ProduccionRequestDTO produccionRequestDTO, Bitacora bitacora, double productividad) {
@@ -69,7 +78,7 @@ public class ProduccionServicioImpl implements ProduccionServicio {
         List<MateriaPrimaProveedor> listaMateriasPrimasProveedores = new ArrayList<>();
         List<MateriaPrima> listaMateriasPrimasGuardadas = new ArrayList<>();
 
-        for(MateriaPrima materiaPrima : listaMateriasPrimas){
+        for (MateriaPrima materiaPrima : listaMateriasPrimas) {
             MateriaPrima materiaPrimaGuardar = new MateriaPrima();
             materiaPrimaGuardar.setNombre(materiaPrima.getNombre());
             materiaPrimaGuardar.setCantidad(materiaPrima.getCantidad());
@@ -77,7 +86,7 @@ public class ProduccionServicioImpl implements ProduccionServicio {
             listaMateriasPrimasGuardadas.add(materiaPrimaGuardada);
         }
 
-        for(MateriaPrima materiaPrima : listaMateriasPrimasGuardadas){
+        for (MateriaPrima materiaPrima : listaMateriasPrimasGuardadas) {
             Optional<Proveedor> proveedorMaterial = proveedorRepo.obtenerProveedorNombreProducto(materiaPrima.getNombre());
             MateriaPrimaProveedor materiaPrimaProveedor = new MateriaPrimaProveedor();
             materiaPrimaProveedor.setProveedor(proveedorMaterial.get());
@@ -86,7 +95,7 @@ public class ProduccionServicioImpl implements ProduccionServicio {
             listaMateriasPrimasProveedores.add(materiaPrimaProveedor);
         }
 
-        for(MateriaPrimaProveedor materiaPrimaProveedor : listaMateriasPrimasProveedores){
+        for (MateriaPrimaProveedor materiaPrimaProveedor : listaMateriasPrimasProveedores) {
             MaterialProducto materialProducto = new MaterialProducto();
             materialProducto.setMateriaPrimaProveedor(materiaPrimaProveedor);
             materialProducto.setProduccion(produccionGuardada);
@@ -95,16 +104,18 @@ public class ProduccionServicioImpl implements ProduccionServicio {
         return calcularEstadisticas(produccionRequestDTO);
     }
 
-    private double calcularProductividad(LocalTime horaInicion, LocalTime horaFin) {
-        return 3;
+    private double calcularProductividad(LocalTime horaInicio, LocalTime horaFin, int cantidadProductos) {
+        double minutosTrabajadosMaquina = calcularDiferenciaTiempoEnMinutos(horaInicio, horaFin);
+        estadisticas.put("Productividad", minutosTrabajadosMaquina / cantidadProductos);
+        return minutosTrabajadosMaquina / cantidadProductos;
     }
 
     private double calcularDiferenciaTiempoEnMinutos(LocalTime horaInicio, LocalTime horaFin) {
         // Calcular la diferencia de tiempo entre la hora de inicio y la hora de fin
-        Duration diferencia = Duration.between(horaInicio, horaFin);
-
-        // Convertir la diferencia de tiempo a minutos como un double
-        return (double) diferencia.toMinutes() / 60;
+        Duration horasTrabajadas = Duration.between(horaInicio, horaFin);
+        estadisticas.put("TI Hora", (double) horasTrabajadas.toMinutes() - 60);
+        // Convertir la horasTrabajadas de tiempo a minutos como un double
+        return (double) horasTrabajadas.toMinutes() / 60;
     }
 
     private Bitacora obtenerBitacoraPorConsecutivo(int consecutivo) throws Exception {
@@ -117,7 +128,6 @@ public class ProduccionServicioImpl implements ProduccionServicio {
 
     private HashMap<String, Double> calcularEstadisticas(ProduccionRequestDTO produccionRequestDTO) {
 
-        HashMap<String,Double> estadisticas = new HashMap<>();
         double referenciaAgua = 0;
         double referenciaAditivo = 0;
         double referenciaCemento = 0;
@@ -125,7 +135,7 @@ public class ProduccionServicioImpl implements ProduccionServicio {
         for (MateriaPrima materiaPrima : produccionRequestDTO.getListaDeMateriasPrimas()) {
             if (materiaPrima.getNombre().equals("Desmoldante")) {
                 double porcentajeDesmoldante = (double) materiaPrima.getCantidad() / produccionRequestDTO.getCantidadProductos();
-                estadisticas.put("% "+materiaPrima.getNombre(), redondearDosDecimales(porcentajeDesmoldante * 100));
+                estadisticas.put("% " + materiaPrima.getNombre(), redondearDosDecimales(porcentajeDesmoldante * 100));
             }
             if (materiaPrima.getNombre().equals("Aditivo")) {
                 referenciaAditivo = materiaPrima.getCantidad();
@@ -153,7 +163,7 @@ public class ProduccionServicioImpl implements ProduccionServicio {
         }
 
         double kiloCementoPorProducto = referenciaCemento / produccionRequestDTO.getCantidadProductos();
-        estadisticas.put("K C / Pdto ", redondearDosDecimales( kiloCementoPorProducto));
+        estadisticas.put("K C / Pdto ", redondearDosDecimales(kiloCementoPorProducto));
 
         double porcentajeAgua = referenciaAgua / referenciaCemento;
         estadisticas.put("% Agua ", redondearDosDecimales(porcentajeAgua * 100));

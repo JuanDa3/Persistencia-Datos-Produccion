@@ -6,4 +6,6 @@ import java.util.HashMap;
 
 public interface ProduccionServicio {
     HashMap<String, Double> guardarProduccion(ProduccionRequestDTO produccionRequestDTO) throws Exception;
+
+    void eliminarProduccion(int id);
 }
