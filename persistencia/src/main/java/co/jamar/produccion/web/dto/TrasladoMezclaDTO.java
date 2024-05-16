@@ -14,5 +14,5 @@ public class TrasladoMezclaDTO {
     @JsonProperty("aMaquina")
     private String aMaquina;
     private int cantidadKilos;
-    private ProduccionRequestDTO produccionDTO;
+    private int numBitacora;
 }

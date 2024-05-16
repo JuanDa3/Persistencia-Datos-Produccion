@@ -10,5 +10,5 @@ import lombok.*;
 public class LecturaContadorRequestDTO {
     private int lecturaIncial;
     private int lecturafinal;
-    private ProduccionRequestDTO produccionDTO;
+    private int numBitacora;
 }

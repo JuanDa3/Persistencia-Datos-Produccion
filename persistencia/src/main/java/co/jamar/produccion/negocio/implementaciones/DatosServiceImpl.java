@@ -5,6 +5,8 @@ import co.jamar.produccion.web.dto.DatosProduccionRequestDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
+import java.util.HashMap;
+
 @Service
 public class DatosServiceImpl implements DatosService {
 
@@ -30,14 +32,17 @@ public class DatosServiceImpl implements DatosService {
 
     @Override
     @Transactional
-    public void guardarDatosProduccion(DatosProduccionRequestDTO datosProduccionRequestDTO) throws Exception{
+    public HashMap<String, Double> guardarDatosProduccion(DatosProduccionRequestDTO datosProduccionRequestDTO) throws Exception{
+        HashMap<String, Double> estadisticasProduccion = new HashMap<>();
         bitacoraServicio.guardarBitacota(datosProduccionRequestDTO.getBitacora());
-        produccionServicio.guardarProduccion(datosProduccionRequestDTO.getProduccion());
-        trasladoMezclaServicio.guardarTrasladoMezcla(datosProduccionRequestDTO.getTrasladoMezcla());
+        estadisticasProduccion = produccionServicio.guardarProduccion(datosProduccionRequestDTO.getProduccion());
+        trasladoMezclaServicio.guardarTrasladoMezcla(datosProduccionRequestDTO.getTrasladoMezcla(), datosProduccionRequestDTO.getBitacora().getFecha());
         lecturaContadorServicio.guardarLecturaContador(datosProduccionRequestDTO.getLecturaContadorAgua());
         controlCementoServicio.guardarControlCemento(datosProduccionRequestDTO.getControlCemento());
         tiempoParadaMaquinaServicio.guardarTiemposParadaMaquina(datosProduccionRequestDTO.getListaTiemposParadaMaquina());
         productoNoConformeServicio.guardarProductoNoConforme(datosProduccionRequestDTO.getListaProductoNoConforme());
         pruebaServicio.guardarPrueba(datosProduccionRequestDTO.getPrueba());
+
+        return estadisticasProduccion;
     }
 }

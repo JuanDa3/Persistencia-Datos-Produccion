@@ -7,9 +7,11 @@ import co.jamar.produccion.web.dto.ProduccionRequestDTO;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.LocalTime;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Optional;
 
@@ -39,10 +41,18 @@ public class ProduccionServicioImpl implements ProduccionServicio {
 
     @Transactional
     @Override
-    public void guardarProduccion(ProduccionRequestDTO produccionRequestDTO) throws Exception {
-        Bitacora bitacora = obtenerBitacoraPorConsecutivo(produccionRequestDTO.getBitacora().getConsecutivo());
+    public HashMap<String, Double> guardarProduccion(ProduccionRequestDTO produccionRequestDTO) throws Exception {
+        Bitacora bitacora = obtenerBitacoraPorConsecutivo(produccionRequestDTO.getNumBitacora());
         double productividad = calcularProductividad(produccionRequestDTO.getHoraInicio(), produccionRequestDTO.getHoraFin());
 
+        Produccion produccion = getProduccion(produccionRequestDTO, bitacora, productividad);
+
+        Produccion produccionGuardada = produccionRepo.save(produccion);
+
+        return asociarDatosProduccion(produccionGuardada, produccionRequestDTO.getListaDeMateriasPrimas(), produccionRequestDTO);
+    }
+
+    private static Produccion getProduccion(ProduccionRequestDTO produccionRequestDTO, Bitacora bitacora, double productividad) {
         Produccion produccion = new Produccion();
         produccion.setCantidadProductos(produccionRequestDTO.getCantidadProductos());
         produccion.setBitacora(bitacora);
@@ -50,17 +60,14 @@ public class ProduccionServicioImpl implements ProduccionServicio {
         produccion.setHoraFin(produccionRequestDTO.getHoraFin());
         produccion.setProductividad(productividad);
         produccion.setSobranteMezcla(produccionRequestDTO.getSobranteMezcla());
-        produccion.setTotalMezcla(produccionRequestDTO.getSobranteMezcla());
-
-        Produccion produccionGuardada = produccionRepo.save(produccion);
-
-        asociarDatosProduccion(produccionGuardada, produccionRequestDTO.getListaDeMateriasPrimas());
+        produccion.setTotalMezcla(produccionRequestDTO.getTotalMezcla());
+        return produccion;
     }
 
-    public void asociarDatosProduccion(Produccion produccionGuardada, List<MateriaPrima> listaMateriasPrimas){
+    private HashMap<String, Double> asociarDatosProduccion(Produccion produccionGuardada, List<MateriaPrima> listaMateriasPrimas, ProduccionRequestDTO produccionRequestDTO) {
 
-        List<MateriaPrima>listaMateriasPrimasGuardadas = new ArrayList<>();
-        List<MateriaPrimaProveedor>listaMateriasPrimasProveedores = new ArrayList<>();
+        List<MateriaPrimaProveedor> listaMateriasPrimasProveedores = new ArrayList<>();
+        List<MateriaPrima> listaMateriasPrimasGuardadas = new ArrayList<>();
 
         for(MateriaPrima materiaPrima : listaMateriasPrimas){
             MateriaPrima materiaPrimaGuardar = new MateriaPrima();
@@ -85,26 +92,86 @@ public class ProduccionServicioImpl implements ProduccionServicio {
             materialProducto.setProduccion(produccionGuardada);
             materialProductoRepo.save(materialProducto);
         }
-
+        return calcularEstadisticas(produccionRequestDTO);
     }
 
-    public double calcularProductividad(LocalTime horaInicion, LocalTime horaFin){
+    private double calcularProductividad(LocalTime horaInicion, LocalTime horaFin) {
         return 3;
     }
 
-    public static double calcularDiferenciaTiempoEnMinutos(LocalTime horaInicio, LocalTime horaFin) {
+    private double calcularDiferenciaTiempoEnMinutos(LocalTime horaInicio, LocalTime horaFin) {
         // Calcular la diferencia de tiempo entre la hora de inicio y la hora de fin
         Duration diferencia = Duration.between(horaInicio, horaFin);
 
         // Convertir la diferencia de tiempo a minutos como un double
-        return (double) diferencia.toMinutes()/60;
+        return (double) diferencia.toMinutes() / 60;
     }
 
-    public Bitacora obtenerBitacoraPorConsecutivo(int consecutivo)throws Exception{
-        Optional<Bitacora>bitacoraOptional = bitacoraRepo.obtenerBitacoraPorConsecutivo(consecutivo);
-        if(bitacoraOptional.isEmpty()){
+    private Bitacora obtenerBitacoraPorConsecutivo(int consecutivo) throws Exception {
+        Optional<Bitacora> bitacoraOptional = bitacoraRepo.obtenerBitacoraPorConsecutivo(consecutivo);
+        if (bitacoraOptional.isEmpty()) {
             throw new Exception("Bitacora no existe");
         }
         return bitacoraOptional.get();
+    }
+
+    private HashMap<String, Double> calcularEstadisticas(ProduccionRequestDTO produccionRequestDTO) {
+
+        HashMap<String,Double> estadisticas = new HashMap<>();
+        double referenciaAgua = 0;
+        double referenciaAditivo = 0;
+        double referenciaCemento = 0;
+
+        for (MateriaPrima materiaPrima : produccionRequestDTO.getListaDeMateriasPrimas()) {
+            if (materiaPrima.getNombre().equals("Desmoldante")) {
+                double porcentajeDesmoldante = (double) materiaPrima.getCantidad() / produccionRequestDTO.getCantidadProductos();
+                estadisticas.put("% "+materiaPrima.getNombre(), redondearDosDecimales(porcentajeDesmoldante * 100));
+            }
+            if (materiaPrima.getNombre().equals("Aditivo")) {
+                referenciaAditivo = materiaPrima.getCantidad();
+            }
+            if (materiaPrima.getNombre().equals("Agua")) {
+                referenciaAgua = materiaPrima.getCantidad();
+            }
+            if (materiaPrima.getNombre().equals("Cemento")) {
+                double porcentajeCemento = (double) materiaPrima.getCantidad() / produccionRequestDTO.getTotalMezcla();
+                referenciaCemento = materiaPrima.getCantidad();
+                estadisticas.put("%Cemento ", redondearDosDecimales(porcentajeCemento * 100));
+            }
+            if (materiaPrima.getNombre().equals("Triturado")) {
+                double porcentajeTriturado = (double) materiaPrima.getCantidad() / produccionRequestDTO.getTotalMezcla();
+                estadisticas.put("% " + materiaPrima.getNombre(), redondearDosDecimales(porcentajeTriturado * 100));
+            }
+            if (materiaPrima.getNombre().equals("Arena Gruesa")) {
+                double porcentajeArenaGruesa = (double) materiaPrima.getCantidad() / produccionRequestDTO.getTotalMezcla();
+                estadisticas.put("% " + materiaPrima.getNombre(), redondearDosDecimales(porcentajeArenaGruesa * 100));
+            }
+            if (materiaPrima.getNombre().equals("Arena Fina")) {
+                double porcentajeArenaFina = (double) materiaPrima.getCantidad() / produccionRequestDTO.getTotalMezcla();
+                estadisticas.put("% " + materiaPrima.getNombre(), redondearDosDecimales(porcentajeArenaFina * 100));
+            }
+        }
+
+        double kiloCementoPorProducto = referenciaCemento / produccionRequestDTO.getCantidadProductos();
+        estadisticas.put("K C / Pdto ", redondearDosDecimales( kiloCementoPorProducto));
+
+        double porcentajeAgua = referenciaAgua / referenciaCemento;
+        estadisticas.put("% Agua ", redondearDosDecimales(porcentajeAgua * 100));
+
+        double porcentajeSobrante = (double) produccionRequestDTO.getSobranteMezcla() / produccionRequestDTO.getTotalMezcla();
+        estadisticas.put("% Sobrante ", redondearDosDecimales(porcentajeSobrante * 100));
+
+        double porcentajeCementoPulir = (double) produccionRequestDTO.getCementoPulir() / produccionRequestDTO.getCantidadProductos();
+        estadisticas.put("% cemento Pulir", redondearDosDecimales(porcentajeCementoPulir));
+
+        double porcentajeAditivo = (referenciaAditivo / (referenciaCemento * 1000));
+        estadisticas.put("% Aditivo", redondearDosDecimales(porcentajeAditivo * 100));
+
+        return estadisticas;
+    }
+
+    private double redondearDosDecimales(double valor) {
+        DecimalFormat df = new DecimalFormat("#.##");
+        return Double.parseDouble(df.format(valor));
     }
 }

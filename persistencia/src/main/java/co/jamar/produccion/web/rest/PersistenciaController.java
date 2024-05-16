@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.HashMap;
+
 @RestController
 @RequestMapping("api/produccion/persistencia")
 public class PersistenciaController {
@@ -22,9 +24,8 @@ public class PersistenciaController {
     @PostMapping
     public ResponseEntity<?>guardarDatosProduccion(@RequestBody DatosProduccionRequestDTO datosProduccionRequestDTO){
         try {
-            System.out.println(datosProduccionRequestDTO);
-            datosService.guardarDatosProduccion(datosProduccionRequestDTO);
-            return  ResponseEntity.status(201).body(new Mensaje("La Produccion se registró correctamente"));
+            HashMap<String, Double> respuestaEstadisticasProduccion = datosService.guardarDatosProduccion(datosProduccionRequestDTO);
+            return  ResponseEntity.status(201).body(new Mensaje("La Produccion se registró correctamente" + respuestaEstadisticasProduccion));
         } catch (Exception e) {
             return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
         }

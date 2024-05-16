@@ -35,5 +35,4 @@ public class BitacoraController {
             return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
         }
     }
-
 }

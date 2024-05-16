@@ -16,5 +16,5 @@ public class ControlCementoRequestDTO {
     private LocalDate fechaEntradaKilos;
     private double salidaKilos;
     private LocalDate fechaSalidaKilos;
-    private ProduccionRequestDTO produccionDTO;
+    private int numBitacora;
 }

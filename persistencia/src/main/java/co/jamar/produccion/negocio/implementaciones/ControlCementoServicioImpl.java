@@ -28,7 +28,7 @@ public class ControlCementoServicioImpl implements ControlCementoServicio {
 
     @Override
     public void guardarControlCemento(ControlCementoRequestDTO controlCementoRequestDTO) {
-        Produccion produccion = produccionRepo.obtenerProduccionPorConsecutivoBitacora(controlCementoRequestDTO.getProduccionDTO().getBitacora().getConsecutivo());
+        Produccion produccion = produccionRepo.obtenerProduccionPorConsecutivoBitacora(controlCementoRequestDTO.getNumBitacora());
 
         ControlCemento controlCemento = new ControlCemento();
         controlCemento.setSaldo(controlCementoRequestDTO.getSaldo());

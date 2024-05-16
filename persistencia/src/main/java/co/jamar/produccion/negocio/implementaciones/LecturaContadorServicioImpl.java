@@ -21,7 +21,7 @@ public class LecturaContadorServicioImpl implements LecturaContadorServicio {
 
     @Override
     public void guardarLecturaContador(LecturaContadorRequestDTO lecturaContadorRequestDTO) {
-        Produccion produccion = produccionRepo.obtenerProduccionPorConsecutivoBitacora(lecturaContadorRequestDTO.getProduccionDTO().getBitacora().getConsecutivo());
+        Produccion produccion = produccionRepo.obtenerProduccionPorConsecutivoBitacora(lecturaContadorRequestDTO.getNumBitacora());
 
         LecturaContadorAgua lecturaContadorAgua = new LecturaContadorAgua();
         lecturaContadorAgua.setLecturaInicial(lecturaContadorRequestDTO.getLecturaIncial());

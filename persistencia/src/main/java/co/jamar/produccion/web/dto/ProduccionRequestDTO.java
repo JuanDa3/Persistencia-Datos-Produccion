@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @ToString
 public class ProduccionRequestDTO {
-    private BitacoraRequestDTO bitacora;
+    private int numBitacora;
 
     private LocalTime horaInicio;
 
@@ -25,6 +25,8 @@ public class ProduccionRequestDTO {
     private double productividad;
 
     private int cantidadProductos;
+
+    private int cementoPulir;
 
     private int sobranteMezcla;
 

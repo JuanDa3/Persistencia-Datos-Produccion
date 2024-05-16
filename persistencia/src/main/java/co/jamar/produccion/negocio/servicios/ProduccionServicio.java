@@ -2,6 +2,8 @@ package co.jamar.produccion.negocio.servicios;
 
 import co.jamar.produccion.web.dto.ProduccionRequestDTO;
 
+import java.util.HashMap;
+
 public interface ProduccionServicio {
-    void guardarProduccion(ProduccionRequestDTO produccionRequestDTO) throws Exception;
+    HashMap<String, Double> guardarProduccion(ProduccionRequestDTO produccionRequestDTO) throws Exception;
 }

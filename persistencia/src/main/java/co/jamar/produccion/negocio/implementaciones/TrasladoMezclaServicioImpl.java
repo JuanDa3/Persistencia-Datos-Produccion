@@ -8,6 +8,8 @@ import co.jamar.produccion.persistencia.repositorios.TrasladoMezclaRepo;
 import co.jamar.produccion.web.dto.TrasladoMezclaDTO;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
+
 @Service
 public class TrasladoMezclaServicioImpl implements TrasladoMezclaServicio {
 
@@ -21,14 +23,14 @@ public class TrasladoMezclaServicioImpl implements TrasladoMezclaServicio {
     }
 
     @Override
-    public void guardarTrasladoMezcla(TrasladoMezclaDTO trasladoMezclaDTO) {
-        Produccion produccion = produccionRepo.obtenerProduccionPorConsecutivoBitacora(trasladoMezclaDTO.getProduccionDTO().getBitacora().getConsecutivo());
+    public void guardarTrasladoMezcla(TrasladoMezclaDTO trasladoMezclaDTO, LocalDate fecha) {
+        Produccion produccion = produccionRepo.obtenerProduccionPorConsecutivoBitacora(trasladoMezclaDTO.getNumBitacora());
         TrasladoMezcla trasladoMezcla = new TrasladoMezcla();
         trasladoMezcla.setProduccion(produccion);
         trasladoMezcla.setDeMaquina(trasladoMezclaDTO.getDeMaquina());
         trasladoMezcla.setAMaquina(trasladoMezclaDTO.getAMaquina());
         trasladoMezcla.setCantidad(trasladoMezclaDTO.getCantidadKilos());
-        trasladoMezcla.setFecha(trasladoMezclaDTO.getProduccionDTO().getBitacora().getFecha());
+        trasladoMezcla.setFecha(fecha);
         trasladoMezclaRepo.save(trasladoMezcla);
     }
 }

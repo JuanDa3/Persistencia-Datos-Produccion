@@ -12,7 +12,6 @@ import co.jamar.produccion.persistencia.repositorios.ProductoRepo;
 import co.jamar.produccion.web.dto.BitacoraRequestDTO;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDate;
 import java.util.Optional;
 
 @Service
@@ -35,6 +34,7 @@ public class BitacoraServicioImpl implements BitacoraServicio {
 
     @Override
     public void guardarBitacota(BitacoraRequestDTO bitacoraRequestDTO) throws Exception {
+        validarExisteBitacora(bitacoraRequestDTO.getConsecutivo());
         boolean esBitacoraPrincipal = bitacoraRepo.existsEsPrincipalEnUltimaFecha(bitacoraRequestDTO.getFecha());
 
         Maquina maquina = obtenerMaquina(bitacoraRequestDTO.getMaquinaDTO().getNombre());
@@ -52,6 +52,7 @@ public class BitacoraServicioImpl implements BitacoraServicio {
         bitacora.setProducto(producto);
 
         bitacoraRepo.save(bitacora);
+
     }
 
     @Override
@@ -86,17 +87,5 @@ public class BitacoraServicioImpl implements BitacoraServicio {
             throw new Exception("Producto no existe");
         }
         return productoOptional.get();
-    }
-
-
-    private static Producto getProducto(BitacoraRequestDTO bitacoraRequestDTO) {
-        Producto producto = new Producto();
-        producto.setNombre(bitacoraRequestDTO.getProductoDTO().getNombre());
-        producto.setReferencia(bitacoraRequestDTO.getProductoDTO().getReferencia());
-        producto.setComplemento(bitacoraRequestDTO.getProductoDTO().getComplemento());
-        producto.setPeso(bitacoraRequestDTO.getProductoDTO().getPeso());
-        producto.setReferenciaP1(bitacoraRequestDTO.getProductoDTO().getReferenciaP1());
-        producto.setLinea(bitacoraRequestDTO.getProductoDTO().getLinea());
-        return producto;
     }
 }
