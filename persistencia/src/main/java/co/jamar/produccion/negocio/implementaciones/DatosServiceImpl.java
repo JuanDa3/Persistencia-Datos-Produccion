@@ -1,6 +1,7 @@
 package co.jamar.produccion.negocio.implementaciones;
 
 import co.jamar.produccion.negocio.servicios.*;
+import co.jamar.produccion.persistencia.entidades.Bitacora;
 import co.jamar.produccion.web.dto.DatosProduccionRequestDTO;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -34,8 +35,8 @@ public class DatosServiceImpl implements DatosService {
     @Transactional
     public HashMap<String, Double> guardarDatosProduccion(DatosProduccionRequestDTO datosProduccionRequestDTO) throws Exception{
         HashMap<String, Double> estadisticasProduccion = new HashMap<>();
-        bitacoraServicio.guardarBitacota(datosProduccionRequestDTO.getBitacora());
-        estadisticasProduccion = produccionServicio.guardarProduccion(datosProduccionRequestDTO.getProduccion());
+        Bitacora bitacoraGuardada = bitacoraServicio.guardarBitacora(datosProduccionRequestDTO.getBitacora());
+        estadisticasProduccion = produccionServicio.guardarProduccion(bitacoraGuardada, datosProduccionRequestDTO.getProduccion());
         trasladoMezclaServicio.guardarTrasladoMezcla(datosProduccionRequestDTO.getTrasladoMezcla(), datosProduccionRequestDTO.getBitacora().getFecha());
         lecturaContadorServicio.guardarLecturaContador(datosProduccionRequestDTO.getLecturaContadorAgua());
         controlCementoServicio.guardarControlCemento(datosProduccionRequestDTO.getControlCemento());

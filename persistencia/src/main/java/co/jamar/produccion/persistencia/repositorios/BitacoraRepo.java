@@ -14,11 +14,11 @@ import java.util.Optional;
 @Repository
 public interface BitacoraRepo extends JpaRepository<Bitacora, Integer> {
 
-    @Query("SELECT CASE WHEN COUNT(b) > 0 THEN true ELSE false END " +
+    @Query("SELECT b " +
             "FROM Bitacora b " +
             "WHERE b.fecha = :fecha " +
             "AND b.esPrincipal = true")
-    boolean existsEsPrincipalEnUltimaFecha(@Param("fecha") LocalDate fecha);
+    Optional<Bitacora> existsEsPrincipalEnUltimaFecha(@Param("fecha") LocalDate fecha);
 
     @Query("select b from Bitacora b where b.consecutivo = :consecutivo")
     Optional<Bitacora> obtenerBitacoraPorConsecutivo(int consecutivo);

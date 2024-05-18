@@ -38,6 +38,9 @@ public class Produccion {
     @Column(name = "sobrante_mezcla")
     private int sobranteMezcla;
 
+    @Column(name = "cemento_pulir")
+    private int cementoPulir;
+
     @OneToOne
     @JoinColumn(name = "id_bitacora")
     private Bitacora bitacora;

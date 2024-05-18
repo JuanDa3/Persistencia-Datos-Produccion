@@ -25,6 +25,9 @@ public class MateriaPrima {
     @Column(nullable = false)
     private int cantidad;
 
+    @Column()
+    private double porcentaje;
+
     @OneToMany(mappedBy = "materiaPrima")
     private List<MateriaPrimaProveedor> proveedores;
 }

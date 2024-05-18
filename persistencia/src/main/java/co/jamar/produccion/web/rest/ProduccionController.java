@@ -17,16 +17,6 @@ public class ProduccionController {
         this.produccionServicio = produccionServicio;
     }
 
-    @PostMapping
-    public ResponseEntity<?>guardarProduccion(@RequestBody ProduccionRequestDTO produccionRequestDTO){
-        try {
-            HashMap<String, Double> estadisticasProduccion = produccionServicio.guardarProduccion(produccionRequestDTO);
-            return  ResponseEntity.status(201).body( estadisticasProduccion);
-        } catch (Exception e) {
-            return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));
-        }
-    }
-
     @DeleteMapping("/{id}")
     public ResponseEntity<?>eliminarProduccion(@PathVariable int id){
         try {

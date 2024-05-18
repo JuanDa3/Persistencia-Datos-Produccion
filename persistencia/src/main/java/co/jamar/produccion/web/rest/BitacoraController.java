@@ -19,7 +19,7 @@ public class BitacoraController {
     @PostMapping
     public ResponseEntity<?>guardarBitacora(@RequestBody BitacoraRequestDTO bitacoraRequestDTO){
         try {
-            bitacoraServicio.guardarBitacota(bitacoraRequestDTO);
+            bitacoraServicio.guardarBitacora(bitacoraRequestDTO);
             return  ResponseEntity.status(201).body(new Mensaje("La Bitacora se registró correctamente"));
         } catch (Exception e) {
             return  ResponseEntity.status(500).body(new Mensaje(e.getMessage()));

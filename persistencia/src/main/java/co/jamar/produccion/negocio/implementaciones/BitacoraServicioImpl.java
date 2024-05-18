@@ -33,9 +33,13 @@ public class BitacoraServicioImpl implements BitacoraServicio {
     }
 
     @Override
-    public void guardarBitacota(BitacoraRequestDTO bitacoraRequestDTO) throws Exception {
+    public Bitacora guardarBitacora(BitacoraRequestDTO bitacoraRequestDTO) throws Exception {
         validarExisteBitacora(bitacoraRequestDTO.getConsecutivo());
-        boolean esBitacoraPrincipal = bitacoraRepo.existsEsPrincipalEnUltimaFecha(bitacoraRequestDTO.getFecha());
+        boolean esBitacoraPrincipal = false;
+        Optional<Bitacora> bitacoraOptional = bitacoraRepo.existsEsPrincipalEnUltimaFecha(bitacoraRequestDTO.getFecha());
+        if(!bitacoraOptional.isPresent()){
+            esBitacoraPrincipal = true;
+        }
 
         Maquina maquina = obtenerMaquina(bitacoraRequestDTO.getMaquinaDTO().getNombre());
 
@@ -46,12 +50,12 @@ public class BitacoraServicioImpl implements BitacoraServicio {
         Bitacora bitacora = new Bitacora();
         bitacora.setConsecutivo(bitacoraRequestDTO.getConsecutivo());
         bitacora.setFecha(bitacoraRequestDTO.getFecha());
-        bitacora.setEsPrincipal(!esBitacoraPrincipal);
+        bitacora.setEsPrincipal(esBitacoraPrincipal);
         bitacora.setMaquina(maquina);
         bitacora.setEmpleado(empleado);
         bitacora.setProducto(producto);
 
-        bitacoraRepo.save(bitacora);
+        return bitacoraRepo.save(bitacora);
 
     }
 

@@ -44,12 +44,4 @@ public class Bitacora {
     @JoinColumn(name = "producto_id", nullable = false)
     private Producto producto;
 
-
-
-
-
-
-//    @OneToMany(mappedBy = "bitacora")
-//    private List<Produccion> producciones;
-
 }
